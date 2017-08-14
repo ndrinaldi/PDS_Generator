@@ -1,0 +1,214 @@
+<?php
+     FUNCTION calculate_recordid_details (schema_details SCHEMA_MAP_T, xml_paths XPATHS_T, column_prefix VARCHAR2) RETURN RECORDID_FIELDS_T AS
+      recordids RECORDID_FIELDS_T;
+
+      temp_description                VARCHAR2 (4000);
+      temp_enterprise_id              VARCHAR2 (4000);
+      temp_year                       VARCHAR2 (4000);
+      temp_pi_type_code               VARCHAR2 (4000);
+      temp_serialized_id              VARCHAR2 (4000);
+      temp_order_number               VARCHAR2 (4000);
+      temp_order_mod_id               VARCHAR2 (4000);
+      temp_pi_mod_id                  VARCHAR2 (4000);
+      temp_non_dod_num                VARCHAR2 (4000);
+
+     BEGIN
+
+       temp_description := NULL;
+       temp_enterprise_id := NULL;
+       temp_year := NULL;
+       temp_pi_type_code := NULL;
+       temp_serialized_id := NULL;
+       temp_order_number := NULL;
+       temp_order_mod_id := NULL;
+       temp_pi_mod_id := NULL;
+       temp_non_dod_num := NULL;
+
+       recordids (column_prefix || ‘CONTRACT’) := NULL;
+       recordids (column_prefix || ‘DELIVERY_ORDER’) := NULL;
+       recordids (column_prefix || ‘MODIFICATION’) := NULL;
+       recordids (column_prefix || ‘RECORDID’) := NULL;
+       recordids (column_prefix || ‘DOCTYPE’) := NULL;
+
+       -- (BEGIN) Unique code to generate recordid for PDS
+
+       FOR i IN xml_paths.FIRST .. xml_paths.LAST
+            LOOP
+               IF xml_paths (i).XML_PATH =
+                            ‘//ProcurementDocument/’
+                         || schema_details.schema_doctype
+                         || ‘/ProcurementInstrumentHeader/ProcurementInstrumentDates/ProcurementInstrumentEffectiveDate’
+                  AND xml_paths (i).XML_PATH_MARKER = ‘END’
+               THEN
+                  recordids(column_prefix || ‘PI_EFFECTIVE_DATE’) := TO_CHAR (xml_paths (i).XML_PATH_VAL);
+               END IF;
+            END LOOP;
+
+
+        FOR i IN xml_paths.FIRST .. xml_paths.LAST
+            LOOP
+               CASE
+                  WHEN xml_paths (i).XML_PATH =
+                             ‘//ProcurementDocument/’
+                          || schema_details.schema_doctype
+                          || ‘/ProcurementInstrumentHeader/ProcurementInstrumentIdentifier/ProcurementInstrumentDescription’
+                  THEN
+                     temp_description := TO_CHAR (xml_paths (i).XML_PATH_VAL);
+                  WHEN xml_paths (i).XML_PATH =
+                             ‘//ProcurementDocument/’
+                          || schema_details.schema_doctype
+                          || ‘/ProcurementInstrumentHeader/ProcurementInstrumentIdentifier/ProcurementInstrumentNumber/EnterpriseIdentifier’
+                  THEN
+                     temp_enterprise_id := TO_CHAR (xml_paths (i).XML_PATH_VAL);
+                  WHEN xml_paths (i).XML_PATH =
+                             ‘//ProcurementDocument/’
+                          || schema_details.schema_doctype
+                          || ‘/ProcurementInstrumentHeader/ProcurementInstrumentIdentifier/UniformProcurementInstrumentIdentifier/ActivityAddressCode’
+                  THEN
+                     temp_enterprise_id := xml_paths (i).XML_PATH_VAL;
+                  WHEN xml_paths (i).XML_PATH =
+                             ‘//ProcurementDocument/’
+                          || schema_details.schema_doctype
+                          || ‘/ProcurementInstrumentHeader/ProcurementInstrumentIdentifier/ProcurementInstrumentNumber/Year’
+                  THEN
+                     temp_year := xml_paths (i).XML_PATH_VAL;
+                  WHEN xml_paths (i).XML_PATH =
+                             ‘//ProcurementDocument/’
+                          || schema_details.schema_doctype
+                          || ‘/ProcurementInstrumentHeader/ProcurementInstrumentIdentifier/UniformProcurementInstrumentIdentifier/Year’
+                  THEN
+                     temp_year := xml_paths (i).XML_PATH_VAL;
+                  WHEN xml_paths (i).XML_PATH =
+                             ‘//ProcurementDocument/’
+                          || schema_details.schema_doctype
+                          || ‘/ProcurementInstrumentHeader/ProcurementInstrumentIdentifier/ProcurementInstrumentNumber/ProcurementInstrumentTypeCode’
+                  THEN
+                     temp_pi_type_code := xml_paths (i).XML_PATH_VAL;
+                  WHEN xml_paths (i).XML_PATH =
+                             ‘//ProcurementDocument/’
+                          || schema_details.schema_doctype
+                          || ‘/ProcurementInstrumentHeader/ProcurementInstrumentIdentifier/UniformProcurementInstrumentIdentifier/ProcurementInstrumentTypeCode’
+                  THEN
+                     temp_pi_type_code := xml_paths (i).XML_PATH_VAL;
+                  WHEN xml_paths (i).XML_PATH =
+                             ‘//ProcurementDocument/’
+                          || schema_details.schema_doctype
+                          || ‘/ProcurementInstrumentHeader/ProcurementInstrumentIdentifier/ProcurementInstrumentNumber/SerializedIdentifier’
+                  THEN
+                     temp_serialized_id := xml_paths (i).XML_PATH_VAL;
+                  WHEN xml_paths (i).XML_PATH =
+                             ‘//ProcurementDocument/’
+                          || schema_details.schema_doctype
+                          || ‘/ProcurementInstrumentHeader/ProcurementInstrumentIdentifier/UniformProcurementInstrumentIdentifier/SerializedIdentifier’
+                  THEN
+                     temp_serialized_id := xml_paths (i).XML_PATH_VAL;
+                  WHEN xml_paths (i).XML_PATH =
+                             ‘//ProcurementDocument/’
+                          || schema_details.schema_doctype
+                          || ‘/ProcurementInstrumentHeader/ProcurementInstrumentIdentifier/ProcurementInstrumentNumber/OrderNumber’
+                  THEN
+                     temp_order_number := xml_paths (i).XML_PATH_VAL;
+                  WHEN xml_paths (i).XML_PATH =
+                             ‘//ProcurementDocument/’
+                          || schema_details.schema_doctype
+                          || ‘/ProcurementInstrumentHeader/ProcurementInstrumentIdentifier/ProcurementInstrumentNumber/OrderModificationIdentifier’
+                  THEN
+                     temp_order_mod_id := xml_paths (i).XML_PATH_VAL;
+                  WHEN xml_paths (i).XML_PATH =
+                             ‘//ProcurementDocument/’
+                          || schema_details.schema_doctype
+                          || ‘/ProcurementInstrumentHeader/ProcurementInstrumentIdentifier/ProcurementInstrumentNumber/ProcurementInstrumentModificationIdentifier’
+                  THEN
+                     temp_pi_mod_id := xml_paths (i).XML_PATH_VAL;
+                  WHEN xml_paths (i).XML_PATH =
+                             ‘//ProcurementDocument/’
+                          || schema_details.schema_doctype
+                          || ‘/ProcurementInstrumentHeader/ProcurementInstrumentIdentifier/UniformProcurementInstrumentIdentifier/ProcurementInstrumentModificationIdentifier’
+                  THEN
+                     temp_pi_mod_id := xml_paths (i).XML_PATH_VAL;
+                  WHEN xml_paths (i).XML_PATH =
+                             ‘//ProcurementDocument/’
+                          || schema_details.schema_doctype
+                          || ‘/ProcurementInstrumentHeader/ProcurementInstrumentIdentifier/NonDoDNumber’
+                  THEN
+                     temp_non_dod_num := xml_paths (i).XML_PATH_VAL;
+                  ELSE
+                     NULL;
+               END CASE;
+
+               IF xml_paths (i).XML_PATH =
+                            ‘//ProcurementDocument/’
+                         || schema_details.schema_doctype
+                         || ‘/ProcurementInstrumentHeader/ProcurementInstrumentIdentifier’
+                  AND xml_paths (i).XML_PATH_MARKER = ‘BEGIN’
+               THEN
+                  recordids (column_prefix || ‘CONTRACT’) := NULL;
+                  recordids (column_prefix || ‘DELIVERY_ORDER’) := NULL;
+                  recordids (column_prefix || ‘MODIFICATION’) := NULL;
+                  recordids (column_prefix || ‘RECORDID’) := NULL;
+               END IF;
+
+               IF xml_paths (i).XML_PATH =
+                            ‘//ProcurementDocument/’
+                         || schema_details.schema_doctype
+                         || ‘/ProcurementInstrumentHeader//’
+                  AND xml_paths (i).XML_PATH_MARKER = ‘END’
+               THEN
+                  IF LOWER (TO_CHAR (temp_description)) =
+                        ‘represented contract’
+                  THEN
+
+                    -- NonDoDNumber
+                    IF temp_non_dod_num IS NOT NULL THEN
+                     recordids (column_prefix || ‘CONTRACT’) := temp_non_dod_num;
+                    ELSE
+                    -- ProcurementInstrumentNumber/UniformProcurementIdentifier
+                     recordids (column_prefix || ‘CONTRACT’) :=
+                           temp_enterprise_id
+                        || temp_year
+                        || temp_pi_type_code
+                        || temp_serialized_id;
+
+                     recordids (column_prefix || ‘DELIVERY_ORDER’) := temp_order_number;
+                    END IF;
+
+                     IF schema_details.schema_doctype =
+                           ‘AwardModificationInstrument’
+                     THEN
+                        IF temp_order_number IS NOT NULL
+                        THEN
+                           recordids (column_prefix || ‘DELIVERY_ORDER’) := temp_order_number;
+                           recordids (column_prefix || ‘MODIFICATION’) := temp_order_mod_id;
+                        ELSIF temp_pi_mod_id IS NOT NULL
+                        THEN
+                           recordids (column_prefix || ‘DELIVERY_ORDER’) := NULL;
+                           recordids (column_prefix || ‘MODIFICATION’) := temp_pi_mod_id;
+                        ELSE
+                           recordids (column_prefix || ‘DELIVERY_ORDER’) := NULL;
+                           recordids (column_prefix || ‘MODIFICATION’) := NULL;
+                        END IF;
+                     ELSE
+                        recordids (column_prefix || ‘DELIVERY_ORDER’) := temp_order_number;
+                        recordids (column_prefix || ‘MODIFICATION’) := NULL;
+                     END IF;
+
+                     EXIT; -- no need to continue parsing the paths - we have the recordid details at this point
+                  END IF;
+               END IF;
+            END LOOP;
+
+
+
+        recordids(column_prefix || ‘DOCTYPE’) := schema_details.schema_doctype;
+
+        recordids(column_prefix || ‘RECORDID’) :=
+             recordids (column_prefix ||'CONTRACT’)
+          || recordids (column_prefix || ‘DELIVERY_ORDER’)
+          || recordids (column_prefix || ‘MODIFICATION’);
+
+       -- (END) Unique code to generate recordid for PDS
+
+      RETURN recordids;
+
+     END calculate_recordid_details;
+?>
