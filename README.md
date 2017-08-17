@@ -14,5 +14,5 @@ The feilds that were left ungenerated are:
 - RegulationURL                   (single field)
 - ModificationDetails             (single field)
 
-This solution currently only works for the PDS v2.5 Schema
+This solution only works for the PDS v2.5 Schema currently.
 
