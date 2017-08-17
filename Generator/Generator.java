@@ -500,7 +500,7 @@ public class Generator{
     Secondary.previous();
     // Handeling ServiceAllowanceCharges
     RegFillHeaderInfoAddDel(Primary, Secondary, 8);
-    // Handeling RequirementsDescription (attrbute change, remove for now)
+    // Handeling RequirementsDescription (attrbute change)
     Primary.deleteChild(9);
     Secondary.deleteChild(9);
     // Handeling TelecommunicationModificationDetails (can only be cahnged)
