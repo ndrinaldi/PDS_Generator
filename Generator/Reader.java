@@ -15,7 +15,7 @@ public class Reader {
 
 		// Initialize Writer for test output
 		try{
-	    PrintWriter writer = new PrintWriter("log.txt", "UTF-8");
+	    PrintWriter writer = new PrintWriter("ReaderErros.txt", "UTF-8");
 
 			// Initialize SAX Parser to fread XSD
 			try {
