@@ -10,7 +10,7 @@ corropsonding add / change / delete files, will be generator and placed into
 a GeeneratedFiles directory. 
 
 The feilds that were left ungenerated are:
-- ProcurementInstrumentIdentifier (larger field)
+- ProcurementInstrumentIdentifier (multiple fields)
 - RegulationURL                   (single field)
 - ModificationDetails             (single field)
 
