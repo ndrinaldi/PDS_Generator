@@ -40,7 +40,7 @@ public class Generator{
 
     Writer writer = new Writer();
     for(int i = 0; i < Docs.size(); i++){
-      writer.WriteTree(Docs.get(i), "GeneratedFiles/ProcurementDocment"+i+"-0.xml");
+      writer.WriteTree(Docs.get(i), "../GeneratedFiles/ProcurementDocment"+i+"-0.xml");
     }
   }
 
@@ -57,11 +57,11 @@ public class Generator{
     Writer writer = new Writer();
     for(int i = 0; i < Docs.size()*3; i++){
       if(i%3 == 0){
-        writer.WriteTree(AddDocs.get(i/3), "GeneratedFiles/ProcurementDocment"+i/3+"-1.xml");
+        writer.WriteTree(AddDocs.get(i/3), "../GeneratedFiles/ProcurementDocment"+i/3+"-1.xml");
       }else if(i%3 == 1){
-        writer.WriteTree(ChangeDocs.get(i/3), "GeneratedFiles/ProcurementDocment"+i/3+"-2.xml");
+        writer.WriteTree(ChangeDocs.get(i/3), "../GeneratedFiles/ProcurementDocment"+i/3+"-2.xml");
       }else if(i%3 == 2){
-        writer.WriteTree(DeleteDocs.get(i/3), "GeneratedFiles/ProcurementDocment"+i/3+"-3.xml");
+        writer.WriteTree(DeleteDocs.get(i/3), "../GeneratedFiles/ProcurementDocment"+i/3+"-3.xml");
       }
     }
   }
@@ -528,7 +528,7 @@ public class Generator{
     Secondary.putAttribute("name", "ProcurementInstrumentModificationIdentifier");
     Secondary.setData("A00003");
     Secondary.previous();
-    
+
     Primary.previous();
     Secondary.previous();
     // Handeling BasicInformation (can only be changed)

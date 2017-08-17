@@ -12,7 +12,7 @@ public class PDSGenv3{
     Generator generator = new Generator();
     Writer writer = new Writer();
 
-    reader.Read("PDS_Schema_v2.5.xsd", Forest_25);     //Reads the XSD into multiple PDSTree ojbects
+    reader.Read("../PDS_Schema_v2.5.xsd", Forest_25);     //Reads the XSD into multiple PDSTree ojbects
     PDSTree PDS_25 = constructor.Deforest(Forest_25);  //Consolidates PDSTree objects into a single Master blueprint PDSTree
     PDSTree PDS_25_forMods = PDS_25.CloneFullTree();   //Sperate the blueprint into an Award tree and Modification tree
     generator.GenerateAwards(PDS_25);                  //Generate Award Docments so that every data field is expressed at least once, the writes the tree to a file as an xml
